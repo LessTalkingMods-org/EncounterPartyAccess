@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Module xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
+        xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/BUTR/Bannerlord.XmlSchemas/master/SubModule.xsd" >
+  <Id value="EncounterPartyAccess" />
+  <Name value="Party Screen In Encounter" />
+  <Version value="v1.0.0" />
+  <DefaultModule value="false" />
+  <ModuleCategory value="Singleplayer" />
+  <ModuleType value="Community" />
+  <DependedModules>
+    <DependedModule Id="Bannerlord.Harmony" DependentVersion="v2.2.2" />
+    <DependedModule Id="Native" DependentVersion="v1.4.6" />
+    <DependedModule Id="SandBoxCore" DependentVersion="v1.4.6" />
+    <DependedModule Id="SandBox" DependentVersion="v1.4.6" />
+    <DependedModule Id="StoryMode" DependentVersion="v1.4.6" />
+  </DependedModules>
+  <!-- Community Dependency Metadata (BLSE load order) -->
+  <DependedModuleMetadatas>
+    <DependedModuleMetadata id="Bannerlord.Harmony" order="LoadBeforeThis" version="v2.2.2" />
+    <DependedModuleMetadata id="Native" order="LoadBeforeThis" version="v1.4.6.*" />
+    <DependedModuleMetadata id="SandBoxCore" order="LoadBeforeThis" version="v1.4.6.*" />
+    <DependedModuleMetadata id="SandBox" order="LoadBeforeThis" version="v1.4.6.*" />
+    <DependedModuleMetadata id="StoryMode" order="LoadBeforeThis" version="v1.4.6.*" />
+  </DependedModuleMetadatas>
+  <SubModules>
+    <SubModule>
+      <Name value="EncounterPartyAccess" />
+      <DLLName value="EncounterPartyAccess.dll" />
+      <SubModuleClassType value="EncounterPartyAccess.SubModule" />
+      <Tags />
+    </SubModule>
+  </SubModules>
+</Module>

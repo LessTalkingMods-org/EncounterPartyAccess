@@ -1,0 +1,13 @@
+# Build output
+bin/
+obj/
+
+# IDE
+.vs/
+*.user
+*.suo
+
+# Local deploy bookkeeping
+scripts/.last-deploy.json
+scripts/.pending-deploy.json
+scripts/.watcher.log

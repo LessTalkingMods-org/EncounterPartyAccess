@@ -1,0 +1,36 @@
+<Project Sdk="Bannerlord.BUTRModule.Sdk/1.1.0.129">
+
+  <PropertyGroup>
+    <TargetFramework>net472</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <Nullable>disable</Nullable>
+    <Platforms>x64</Platforms>
+    <Configuration Condition=" '$(Configuration)' == '' ">Release</Configuration>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <!-- Ship a plain EncounterPartyAccess.dll (matches _Module/SubModule.xml DLLName). -->
+    <OverrideAssemblyName>false</OverrideAssemblyName>
+    <AssemblyName>EncounterPartyAccess</AssemblyName>
+    <RootNamespace>EncounterPartyAccess</RootNamespace>
+  </PropertyGroup>
+
+  <!-- Module metadata. The target game version comes from supported-game-versions.txt (the BUTR
+       SDK reads it and adds the matching Bannerlord.ReferenceAssemblies packages, compile-only).
+       Local deploy is handled by Directory.Build.targets via scripts\bl-deploy.ps1, so the SDK's
+       own auto-copy is disabled and GameFolder points at a non-existent path to keep every SDK
+       copy target skipped (Exists() == false). -->
+  <PropertyGroup>
+    <ModuleId>EncounterPartyAccess</ModuleId>
+    <ModuleName>Party Screen In Encounter</ModuleName>
+    <Version>1.0.0</Version>
+    <GameFolder>C:\__encounterpartyaccess_no_auto_deploy__</GameFolder>
+    <DisableModuleCopy>true</DisableModuleCopy>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- Game reference assemblies (TaleWorlds.*, SandBox.View, etc.) are added automatically by the
+         SDK from supported-game-versions.txt, compile-only and never shipped. Harmony is provided
+         by the Bannerlord.Harmony module at runtime, so it's compile-only too. -->
+    <PackageReference Include="Lib.Harmony" Version="2.4.2" PrivateAssets="all" IncludeAssets="compile" />
+  </ItemGroup>
+
+</Project>

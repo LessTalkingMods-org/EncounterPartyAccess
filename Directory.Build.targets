@@ -1,0 +1,40 @@
+<Project>
+
+  <!-- Imported after the BUTR SDK targets, so a same-named target defined here replaces the
+       SDK's. The SDK's PostBuildCheckForVariables only emits the "GameFolder links to a non
+       existing folder" warning (it runs regardless of DisableModuleCopy); redefining it empty
+       suppresses that noise. -->
+  <Target Name="PostBuildCheckForVariables" />
+
+  <!-- ============================ Auto-deploy after build (local only) ============================
+       The SDK's own copy is disabled (it copies mid-build and fails on locked DLLs while the game
+       runs). Instead we deploy here AFTER Build via the lock-safe, self-completing
+       scripts\bl-deploy.ps1 (spawns a background watcher that finishes the copy when the game
+       closes). SubModule.xml is not held open by the game, so it's copied directly.
+       CI passes /p:DeployToGameAfterBuild=false to skip this entirely. -->
+  <PropertyGroup>
+    <DeployToGameAfterBuild Condition="'$(DeployToGameAfterBuild)' == ''">true</DeployToGameAfterBuild>
+    <BlDeployScript Condition="'$(BlDeployScript)' == ''">D:\Claude Code Workspaces\Bannerlord\scripts\bl-deploy.ps1</BlDeployScript>
+    <DeployModuleDir Condition="'$(DeployModuleDir)' == ''">D:\SteamLibrary\steamapps\common\Mount &amp; Blade II Bannerlord\Modules\EncounterPartyAccess</DeployModuleDir>
+  </PropertyGroup>
+
+  <Target Name="DeployToGame" AfterTargets="Build" Condition="'$(DeployToGameAfterBuild)' == 'true' and Exists('$(DeployModuleDir)\..')">
+    <Message Importance="high" Text="Deploying $(ModuleId) -> $(DeployModuleDir)" />
+
+    <!-- Manifest: not locked by the running game, copy directly. -->
+    <MakeDir Directories="$(DeployModuleDir)" />
+    <Copy SourceFiles="$(ProjectDir)_Module\SubModule.xml" DestinationFolder="$(DeployModuleDir)" ContinueOnError="true" />
+
+    <!-- Bin: locked while the game runs -> lock-safe self-completing deploy. -->
+    <Exec IgnoreExitCode="true"
+          Command="powershell -NoProfile -ExecutionPolicy Bypass -Command &quot;&amp; '$(BlDeployScript)' -Source '$(TargetDir)*.dll','$(TargetDir)*.pdb' -Dest '$(DeployModuleDir)\bin\Win64_Shipping_Client' -Label '$(ModuleId)'; exit $LASTEXITCODE&quot;">
+      <Output TaskParameter="ExitCode" PropertyName="_DeployExit" />
+    </Exec>
+
+    <Message Condition="'$(_DeployExit)' == '0'" Importance="high" Text="bl-deploy: $(ModuleId) deployed." />
+    <Message Condition="'$(_DeployExit)' == '3'" Importance="high" Text="bl-deploy: game is open; a background watcher will finish the copy when it closes." />
+    <Warning Condition="'$(_DeployExit)' == '2'" Text="bl-deploy: files locked and the watcher could not start. Close the game, then run scripts\bl-deploy.ps1 -Retry." />
+    <Error   Condition="'$(_DeployExit)' == '1'" Text="bl-deploy failed (exit 1) — see output above." />
+  </Target>
+
+</Project>
