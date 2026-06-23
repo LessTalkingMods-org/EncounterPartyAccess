@@ -68,6 +68,6 @@ jobs:
           file_id: ${{ vars.NEXUS_FILE_ID }}
           filename: EncounterPartyAccess.zip
           version: ${{ steps.ver.outputs.version }}
-          display_name: EncounterPartyAccess ${{ steps.ver.outputs.version }}
+          display_name: Party Screen In Encounter ${{ steps.ver.outputs.version }}
           category: main
           archive_existing_version: "true"
